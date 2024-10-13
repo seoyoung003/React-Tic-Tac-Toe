@@ -6,7 +6,7 @@ const initialGameBoard = [
     [null, null, null],
 ];
 
-export default function GameBoard() {
+export default function GameBoard({ onSelectSquare , activePlayerSymbol}) {
     const [gameBoard, setGameBoard] = useState(initialGameBoard);
 
     function handleSelectSquare(rowIndex, coIndex) {
@@ -15,9 +15,13 @@ export default function GameBoard() {
             // prevGameBoard[rowIndex] [colIndex] = 'X'  추천하지 않는 방법
             // return prevGameBoard;
             const updatedBoard = [...prevGameBoard.map(innerArray => [...innerArray])];//두번 복사하는 이유는 prevGameBoard가 중첩 배열이라 완전히 복사하기 위해
-            updatedBoard [rowIndex] [coIndex] = 'X';
+            updatedBoard [rowIndex] [coIndex] = activePlayerSymbol;
             return updatedBoard;
         });
+
+        //handleSelectSquare 함수가 동작할 때 즉 버튼이 눌러졌을 때 작동해야하므로 이 함수 안에다 써야함
+        
+        onSelectSquare();
     }
 
     return (
