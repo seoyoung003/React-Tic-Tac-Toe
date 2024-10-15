@@ -39,8 +39,12 @@ export default function GameBoard({ onSelectSquare, turns }) {
                 <ol>
                     {row.map((playerSymbol, colIndex) => (
                         <li key={colIndex}>
-                            <button onClick={() => onSelectSquare(rowIndex, colIndex)}>{playerSymbol}</button>
-                        </li>
+                            <button onClick={() => onSelectSquare(rowIndex, colIndex)} 
+                                disabled={playerSymbol !==null}> 
+                                {playerSymbol}
+                            </button>
+                        </li>//playerSymbol이 X나 O면 해당 버튼은 이미 클릭된것이므로 비활성화시켜야함 따라서 조건은 playerSymbol이됨!!!
+                        //null이 아니라면 X나 O이기 때문
                     ))}
                 </ol>
            </li>)}

@@ -3,19 +3,35 @@ import { useState } from "react";
 import Player from "./components/player";
 import GameBoard from "./components/GameBoard";
 import Log from "./components/Log";
+import { WINNING_COMBINATIONS } from "./winning-combination";
+
+function deriveActivePlayer(gameTurns){
+  let currentPlayer = 'X';
+
+  if (gameTurns.length > 0 && gameTurns[0].player === 'X') {//함수 내용만 헬퍼함수에 빼버리고
+    currentPlayer = 'O';
+  }
+
+  return currentPlayer;
+}
+  
 
 function App() {
   const [gameTurns, setGameTurns] = useState([]);
-  const [activePlayer, setActivePlayer] = useState('X');
+  // const [activePlayer, setActivePlayer] = useState('X');
+  
+  const activePlayer = deriveActivePlayer(gameTurns);//drieveAcitvePlayer 호출의 결과를 저장함.
 
   function handleSelectSquare(rowIndex, colIndex) {
-    setActivePlayer((curActivePlayer) => curActivePlayer === 'X' ? 'O' : 'X');//X면 O로 O면 X로 바꾸는 기능 구현
+    // setActivePlayer((curActivePlayer) => curActivePlayer === 'X' ? 'O' : 'X');//X면 O로 O면 X로 바꾸는 기능 구현
     setGameTurns(prevTurns => {
-      let currentPlayer = 'X';
+      // let currentPlayer = 'X';
 
-      if (prevTurns.length > 0 && prevTurns[0].player === 'X') {
-        currentPlayer = 'O';
-      }
+      // if (prevTurns.length > 0 && prevTurns[0].player === 'X') {
+      //   currentPlayer = 'O';
+      // }
+
+      const currentPlayer =  deriveActivePlayer(prevTurns);
 
       const updatedTurns = [
         { square: { row: rowIndex, col: colIndex }, player: currentPlayer}, 
