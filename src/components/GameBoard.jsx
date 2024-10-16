@@ -1,12 +1,7 @@
 
 
-const initialGameBoard = [
-    [null, null, null],
-    [null, null, null],
-    [null, null, null],
-];
 
-export default function GameBoard({ onSelectSquare, turns }) {
+export default function GameBoard({ onSelectSquare, board }) {
     let gameBoard = initialGameBoard;
 
     for (const turn of turns) { //for 과 of문을 사용해서 turns 속의 turns 즉 중첩 구조를 만든다
@@ -34,7 +29,7 @@ export default function GameBoard({ onSelectSquare, turns }) {
 
     return (
         <ol id="game-board">
-           {gameBoard.map((row, rowIndex) => 
+           {board.map((row, rowIndex) => 
            <li key={rowIndex}>
                 <ol>
                     {row.map((playerSymbol, colIndex) => (

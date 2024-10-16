@@ -5,6 +5,13 @@ import GameBoard from "./components/GameBoard";
 import Log from "./components/Log";
 import { WINNING_COMBINATIONS } from "./winning-combination";
 
+
+const initialgameBoard = [
+  [null, null, null],
+  [null, null, null],
+  [null, null, null]
+];
+
 function deriveActivePlayer(gameTurns){
   let currentPlayer = 'X';
 
@@ -21,6 +28,27 @@ function App() {
   // const [activePlayer, setActivePlayer] = useState('X');
   
   const activePlayer = deriveActivePlayer(gameTurns);//drieveAcitvePlayer 호출의 결과를 저장함.
+
+  let gameBoard = initialgameBoard;
+
+  for (const turn of gameTurns) {
+      const {square, player} = turn;
+      const {row, col} = square;
+      gameBoard [row] [col] = player;
+  }
+
+  let winner = null;
+
+  for (const combination of WINNING_COMBINATIONS) {
+    const firstSquareSymbol  = gameBoard[combination[0].row] [combination[0].column];
+    const secondSquareSymbol = gameBoard[combination[1].row] [combination[1].column];
+    const thirdSquareSymbol = gameBoard[combination[2].row] [combination[2].column];
+
+    if (firstSquareSymbol && firstSquareSymbol=== secondSquareSymbol && firstSquareSymbol === thirdSquareSymbol) {//firstSqureSymbol이 null값이면 false가 되므로 먼저 조건에서 확인한다
+      winner = firstSquareSymbol;
+    }
+  }
+
 
   function handleSelectSquare(rowIndex, colIndex) {
     // setActivePlayer((curActivePlayer) => curActivePlayer === 'X' ? 'O' : 'X');//X면 O로 O면 X로 바꾸는 기능 구현
@@ -55,9 +83,11 @@ function App() {
           <Player initialName="Player1" symbol="X" isActive={activePlayer === 'X'}/>
           <Player initialName="Player2" symbol="O" isActive={activePlayer === 'O'}/>
         </ol>
+        {/* JavaScript에서 && 연산자는 **단축 평가(short-circuit evaluation)**를 수행하므로 왼쪽 피연산자가 falsy하면, 오른쪽 피연산자는 평가되지 않고, 전체 표현식은 falsy 값을 반환합니다. */}
+        {winner && <p> You Won, {winner}!</p> } 
         <GameBoard 
           onSelectSquare={handleSelectSquare} 
-          turns={gameTurns}
+          board={gameBoard}
           
           />
       </div>
