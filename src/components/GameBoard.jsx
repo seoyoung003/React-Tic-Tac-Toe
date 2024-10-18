@@ -2,14 +2,8 @@
 
 
 export default function GameBoard({ onSelectSquare, board }) {
-    let gameBoard = initialGameBoard;
+    
 
-    for (const turn of turns) { //for 과 of문을 사용해서 turns 속의 turns 즉 중첩 구조를 만든다
-        const { square, player } =  turn;
-        const {row, col} = square;
-        
-        gameBoard [row] [col] = player;
-    } 
     // const [gameBoard, setGameBoard] = useState(initialGameBoard);
 
     // function handleSelectSquare(rowIndex, coIndex) {
