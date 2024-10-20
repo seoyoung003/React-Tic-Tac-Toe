@@ -6,7 +6,12 @@ import Log from "./components/Log";
 import { WINNING_COMBINATIONS } from "./winning-combination";
 import GameOver from "./components/GameOver";
 
-const initialGameBoard = [
+const PLAYERS = {
+  X: 'Player 1',
+  O: 'Player 2'
+}
+
+const INITIAL_GAME_BOARD = [
   [null, null, null],
   [null, null, null],
   [null, null, null]
@@ -22,22 +27,9 @@ function deriveActivePlayer(gameTurns){
 
   return currentPlayer;
 }
-  
-//setPlayers는 저장버튼을 눌러서 이름이 변경될 때에만 호출되어야함. Player에서 playerName 값을 사용하지 않고 이렇게 하는 이유는
-//playerName이 input태그에서 사용되서 타이핑 할 때 마다 재로딩되서 비효율적이고 playerName을 끌어오는 것이 복잡하기 때문이다.
-function App() {
-  const [players, setPlayers]= useState({  
-    'X' : 'Player1',
-    'O' : 'Player2'
-  })
-  const [gameTurns, setGameTurns] = useState([]);
-  // const [activePlayer, setActivePlayer] = useState('X');
-  
-  const activePlayer = deriveActivePlayer(gameTurns);//drieveAcitvePlayer 호출의 결과를 저장함.
 
-
-  
-  let gameBoard = [...initialGameBoard.map(array => [...array])];//원본을 복사해야 원본의 값을 수정하지 않는다. 단 이차원 배열이므로 깊은 복사를 해야한다.
+function deriveGameBoard(gameTurns) {
+  let gameBoard = [...INITIAL_GAME_BOARD.map(array => [...array])];//원본을 복사해야 원본의 값을 수정하지 않는다. 단 이차원 배열이므로 깊은 복사를 해야한다.
 
   for (const turn of gameTurns) {
       const {square, player} = turn;
@@ -45,7 +37,11 @@ function App() {
       gameBoard [row] [col] = player;
   }
 
-  let winner = null;
+  return gameBoard;
+}
+
+function deriveWinner(gameBoard, players) {
+  let winner;
 
   for (const combination of WINNING_COMBINATIONS) {
     const firstSquareSymbol  = gameBoard[combination[0].row] [combination[0].column];
@@ -53,10 +49,30 @@ function App() {
     const thirdSquareSymbol = gameBoard[combination[2].row] [combination[2].column];
 
     if (firstSquareSymbol && firstSquareSymbol=== secondSquareSymbol && firstSquareSymbol === thirdSquareSymbol) {//firstSqureSymbol이 null값이면 false가 되므로 먼저 조건에서 확인한다
-      winner = firstSquareSymbol;
+      winner = players[firstSquareSymbol];
     }
   }
+  
+  return winner;
 
+}
+  
+//setPlayers는 저장버튼을 눌러서 이름이 변경될 때에만 호출되어야함. Player에서 playerName 값을 사용하지 않고 이렇게 하는 이유는
+//playerName이 input태그에서 사용되서 타이핑 할 때 마다 재로딩되서 비효율적이고 playerName을 끌어오는 것이 복잡하기 때문이다.
+function App() {
+  const [players, setPlayers]= useState(PLAYERS)
+  const [gameTurns, setGameTurns] = useState([]);
+  // const [activePlayer, setActivePlayer] = useState('X');
+  
+  const activePlayer = deriveActivePlayer(gameTurns);//drieveAcitvePlayer 호출의 결과를 저장함.
+
+
+  const gameBoard = deriveGameBoard(gameTurns);
+  
+  
+  const winner = deriveWinner(gameBoard, players);
+
+  
   const hasDraw = gameTurns.length === 9 && !winner 
   function handleSelectSquare(rowIndex, colIndex) {
     // setActivePlayer((curActivePlayer) => curActivePlayer === 'X' ? 'O' : 'X');//X면 O로 O면 X로 바꾸는 기능 구현
@@ -104,8 +120,8 @@ function App() {
     <main>
       <div id="game-container">
         <ol id="players" className="highlight-player">
-          <Player initialName="Player1" symbol="X" isActive={activePlayer === 'X'}/>
-          <Player initialName="Player2" symbol="O" isActive={activePlayer === 'O'}/>
+          <Player initialName={PLAYERS.X} symbol="X" isActive={activePlayer === 'X'} onChangeName={handlePlayerNameChange}/>
+          <Player initialName={PLAYERS.O} symbol="O" isActive={activePlayer === 'O'} onChangeName={handlePlayerNameChange}/>
         </ol>
         {/* JavaScript에서 && 연산자는 **단축 평가(short-circuit evaluation)**를 수행하므로 왼쪽 피연산자가 falsy하면, 오른쪽 피연산자는 평가되지 않고, 전체 표현식은 falsy 값을 반환합니다. */}
         {(winner || hasDraw) && <GameOver winner={winner} onRestart={handleRestart}/>} 
